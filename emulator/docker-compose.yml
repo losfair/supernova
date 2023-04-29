@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  dynamodb-local:
+    command: "-jar DynamoDBLocal.jar -sharedDb -inMemory"
+    image: "amazon/dynamodb-local:1.21.0"
+    ports:
+      - "7990:8000"
+  certsvc:
+    depends_on:
+    - dynamodb-local
+    image: 547201571710.dkr.ecr.us-west-2.amazonaws.com/supernova:certsvc-0.0.0-alpha.17
+    ports:
+      - "7991:8080"
+    environment:
+      - NEBULA_CA_CRT_B64=LS0tLS1CRUdJTiBORUJVTEEgQ0VSVElGSUNBVEUtLS0tLQpDa2NLRlhOMWNHVnlibTkyWVM1bGVHRnRjR3hsTG1OdmJTaWx1Sm1pQmpDbG41NnhCam9nSmpiUWtUZ1pnaDNLClluWjBSYkR5TEUzWHR4d00xR25yMEM4ejJVcWJGN1ZBQVJKQTlkb2FyTUh5bjVvRFNiTWI1Z2lnNHRpeGtJNzAKbFQ4djUzb2R0b2UzYlZSbGNUdUEvcTVzUkJkZjg2UUNlSGpFaVNKQ1VBUG9Kb0lmK3Z2aUpEMXhEQT09Ci0tLS0tRU5EIE5FQlVMQSBDRVJUSUZJQ0FURS0tLS0tCg==
+      - NEBULA_CA_KEY_B64=LS0tLS1CRUdJTiBORUJVTEEgRUQyNTUxOSBQUklWQVRFIEtFWS0tLS0tCmxsdE1hUWdmODlmYlNTeUE4dkVUVHZSSGkrcGNSNjhJQmhCQlFIVDZpNDhtTnRDUk9CbUNIY3BpZG5SRnNQSXMKVGRlM0hBelVhZXZRTHpQWlNwc1h0UT09Ci0tLS0tRU5EIE5FQlVMQSBFRDI1NTE5IFBSSVZBVEUgS0VZLS0tLS0K
+      - DYNAMODB_ENDPOINT=http://host.containers.internal:7990
+      - DYNAMODB_DEVICES_TABLE=devices
+      - AWS_ACCESS_KEY_ID=fake_ak
+      - AWS_SECRET_ACCESS_KEY=fake_sk
+      - AWS_REGION=us-east-1

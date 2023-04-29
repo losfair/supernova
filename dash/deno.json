@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "start": "deno run -A --watch=static/,routes/ dev.ts",
+    "fly-build": "fly deploy --build-only --push"
+  },
+  "importMap": "./import_map.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
+  }
+}

@@ -1,0 +1,81 @@
+name: ci
+
+on:
+- push
+
+jobs:
+  build-certsvc:
+    name: build-certsvc
+    runs-on: ubuntu-20.04
+    permissions:
+      id-token: write
+      contents: read
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '^1.20'
+    - uses: aws-actions/configure-aws-credentials@v1-node16
+      with:
+        role-to-assume: arn:aws:iam::547201571710:role/github-actions-ecr
+        aws-region: us-west-2
+    - uses: aws-actions/amazon-ecr-login@v1
+    - name: Fetch nebula-cert
+      run: |
+        set -e
+        cd /tmp
+        git clone https://github.com/slackhq/nebula
+        cd nebula
+        git checkout v1.6.1
+        go build -o nebula-cert ./cmd/nebula-cert
+    - name: Build certsvc
+      run: |
+        set -e
+        cd certsvc
+        go build -o certsvc
+        cp /tmp/nebula/nebula-cert .
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      with:
+        images: 547201571710.dkr.ecr.us-west-2.amazonaws.com/supernova
+        flavor: |
+          latest=false
+          prefix=certsvc-
+        tags: |
+          type=sha,format=long
+          type=semver,pattern={{version}}
+    - name: Build and push Docker image
+      uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+      with:
+        context: ./certsvc
+        push: ${{ startsWith(github.ref, 'refs/tags/') }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+
+  build-supernovad:
+    name: build-supernovad
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+      with:
+        images: losfair/supernovad
+    - name: Build and push Docker image
+      uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+      with:
+        context: ./supernovad
+        push: ${{ startsWith(github.ref, 'refs/tags/') }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
