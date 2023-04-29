@@ -44,3 +44,46 @@ JWT_SECRET = "<fill this: random jwt secret>"
 
 NEBULA_CA_CRT_B64 = "<fill this: my-ca-cert-base64-encoded>"
 ```
+
+3. On each member node, run the `supernovad` service. You need to generate a
+   Nebula keypair and register the public key on the dashboard first:
+
+```bash
+nebula-cert keygen -out-key ./host.key -out-pub ./host.pub
+```
+
+You can use any service manager you like, but here's an example systemd unit:
+
+```systemd
+[Unit]
+Description=Supernova Daemon
+After=network-online.target
+Requires=network-online.target
+
+[Service]
+DynamicUser=true
+ExecStart=/usr/local/bin/supernovad
+Restart=on-failure
+AmbientCapabilities=CAP_NET_ADMIN
+EnvironmentFile=/opt/supernovad-prod/env
+
+[Install]
+WantedBy=multi-user.target
+```
+
+An example `/opt/supernovad-prod/env` looks like:
+
+```
+DEVICE_NAME=<your-device-name>
+DEVICE_TOKEN=<your-device-token>
+DASH_ENDPOINT=https://nova.su3.io
+CONFIG_OVERRIDE_FILE=/opt/supernovad-prod/override.yml
+NEBULA_EXECUTABLE=/usr/local/bin/nebula
+```
+
+And `/opt/supernovad-prod/override.yml`:
+
+```yaml
+pki:
+  key: /opt/supernovad-prod/host.key
+```
