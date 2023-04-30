@@ -65,25 +65,26 @@ DynamicUser=true
 ExecStart=/usr/local/bin/supernovad
 Restart=on-failure
 AmbientCapabilities=CAP_NET_ADMIN
-EnvironmentFile=/opt/supernovad-prod/env
+EnvironmentFile=/var/lib/private/supernovad-prod/env
+StateDirectory=supernovad-prod
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-An example `/opt/supernovad-prod/env` looks like:
+An example `/var/lib/private/supernovad-prod/env` looks like:
 
 ```
 DEVICE_NAME=<your-device-name>
 DEVICE_TOKEN=<your-device-token>
 DASH_ENDPOINT=https://nova.su3.io
-CONFIG_OVERRIDE_FILE=/opt/supernovad-prod/override.yml
+CONFIG_OVERRIDE_FILE=/var/lib/supernovad-prod/override.yml
 NEBULA_EXECUTABLE=/usr/local/bin/nebula
 ```
 
-And `/opt/supernovad-prod/override.yml`:
+And `/var/lib/private/supernovad-prod/override.yml`:
 
 ```yaml
 pki:
-  key: /opt/supernovad-prod/host.key
+  key: /var/lib/supernovad-prod/host.key
 ```
