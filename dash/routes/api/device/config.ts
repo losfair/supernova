@@ -2,8 +2,8 @@ import { HandlerContext, Handlers } from "$fresh/server.ts";
 import { deviceModel } from "../../../services/singleton.ts";
 import { DeviceInfo } from "../../../services/types.ts";
 import * as yaml from "std/yaml/mod.ts";
-import * as base64 from "std/encoding/base64.ts";
 import { z } from "zod/mod.ts";
+import { nebulaCaCrt } from "../../../services/env.ts";
 
 const inputSchema = z.object({
   configOverride: z.string().or(z.record(z.unknown())).default({}),
@@ -23,7 +23,7 @@ export const handler: Handlers = {
 
     const generated = {
       pki: {
-        ca: new TextDecoder().decode(base64.decode(Deno.env.get("NEBULA_CA_CRT_B64") ?? "")),
+        ca: nebulaCaCrt,
         cert: deviceInfo.crt,
       },
       static_host_map: Object.fromEntries(

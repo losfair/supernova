@@ -1,4 +1,5 @@
-export const dashEnv = {
-  AWS_ACCESS_KEY_ID: Deno.env.get("AWS_ACCESS_KEY_ID") ?? "",
-  AWS_SECRET_ACCESS_KEY: Deno.env.get("AWS_SECRET_ACCESS_KEY") ?? "",
-};
+import * as base64 from "std/encoding/base64.ts";
+
+export const nebulaCaCrt = new TextDecoder().decode(
+  base64.decode(Deno.env.get("NEBULA_CA_CRT_B64") ?? ""),
+);

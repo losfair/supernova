@@ -10,8 +10,9 @@ import * as $3 from "./routes/api/device/_middleware.ts";
 import * as $4 from "./routes/api/device/config.ts";
 import * as $5 from "./routes/api/device/info.ts";
 import * as $6 from "./routes/api/joke.ts";
-import * as $7 from "./routes/dashboard.tsx";
-import * as $8 from "./routes/index.tsx";
+import * as $7 from "./routes/ca.crt.ts";
+import * as $8 from "./routes/dashboard.tsx";
+import * as $9 from "./routes/index.tsx";
 import * as $$0 from "./islands/Counter.tsx";
 import * as $$1 from "./islands/SupernovaAppIsland.tsx";
 
@@ -24,8 +25,9 @@ const manifest = {
     "./routes/api/device/config.ts": $4,
     "./routes/api/device/info.ts": $5,
     "./routes/api/joke.ts": $6,
-    "./routes/dashboard.tsx": $7,
-    "./routes/index.tsx": $8,
+    "./routes/ca.crt.ts": $7,
+    "./routes/dashboard.tsx": $8,
+    "./routes/index.tsx": $9,
   },
   islands: {
     "./islands/Counter.tsx": $$0,

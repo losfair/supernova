@@ -246,3 +246,11 @@ Deno.test("renew", async () => {
     assertEquals(lambdaResBody, { count: 0 });
   }
 });
+
+Deno.test("fetch ca.crt", async () => {
+  const res = await fetch(`http://localhost:8000/ca.crt`);
+  assertEquals(res.status, 200);
+  assertEquals(res.headers.get("content-type"), "application/x-pem-file");
+  const caCrt = await res.text();
+  assert(caCrt.startsWith("-----BEGIN NEBULA CERTIFICATE-----\n"));
+});
