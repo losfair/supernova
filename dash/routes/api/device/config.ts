@@ -54,8 +54,8 @@ export const handler: Handlers = {
         mtu: 1300,
       },
       relay: {
-        relays: lighthouses.map((x) => x.ip.split("/")[0]),
-        am_relay: deviceInfo.amLighthouse,
+        relays: [],
+        am_relay: false,
         use_relays: false,
       },
       logging: {
