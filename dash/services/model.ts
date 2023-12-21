@@ -52,6 +52,10 @@ export class DeviceModel {
       );
     }
 
+    if (resp.FunctionError) {
+      throw new Error(`Failed to sign certificate: ${resp.FunctionError}`);
+    }
+
     const output: CertificateResponse = JSON.parse(
       new TextDecoder().decode(resp.Payload!),
     );
